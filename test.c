@@ -141,12 +141,51 @@ static char * test_deque()
   return 0;
 }
 
+static char * test_cll()
+{
+  CllElt e[4];
+
+  /* Create the circle e[3]-e[2]-e[1]-e[0] with values 15-150-1500-15000 */
+
+  e[0] = getCll(15);
+
+  mu_assert(e[0]->next == e[0], "Single element circle next element should be "
+    "self [0036]");
+  mu_assert(e[0]->previous == e[0], "Single element circle previous element "
+    "should be self [0037]");
+
+  e[2] = e[0]->addLeft(e[0], 1500);
+  e[1] = e[0]->addLeft(e[0], 150);
+  e[3] = e[0]->addRight(e[0], 15000);
+
+  mu_assert(e[3]->next == e[2], "Adding elements to circle failed [0038]");
+  mu_assert(e[2]->next == e[1], "Adding elements to circle failed [0039]");
+  mu_assert(e[1]->next == e[0], "Adding elements to circle failed [0040]");
+  mu_assert(e[0]->next == e[3], "Adding elements to circle failed [0041]");
+  mu_assert(e[3]->previous == e[0], "Adding elements to circle failed [0042]");
+  mu_assert(e[2]->previous == e[3], "Adding elements to circle failed [0043]");
+  mu_assert(e[1]->previous == e[2], "Adding elements to circle failed [0044]");
+  mu_assert(e[0]->previous == e[1], "Adding elements to circle failed [0045]");
+
+  mu_assert(e[3]->pop(e[3]) == 15000, "Popped element value unexpected "
+    "[0046]");
+  mu_assert(e[0]->next == e[2], "Circle in unexpected state after popping "
+    "[0047]");
+  mu_assert(e[2]->previous == e[0], "Circle in unexpected state after popping "
+    "[0048]");
+
+  e[0]->destroy(e[0]);
+
+  return 0;
+}
+
 static char * all_tests()
 {
   mu_suite_start();
   mu_run_test(test_queue);
   mu_run_test(test_stack);
   mu_run_test(test_deque);
+  mu_run_test(test_cll);
   return 0;
 }
 

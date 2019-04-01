@@ -333,3 +333,112 @@ Deque getDeque(void)
   ret->destroy = _dequeDestroy;
   return ret;
 }
+
+/* Circular linked list */
+
+CllElt _cllAddInternal(CllElt e, int elem, int direction)
+{
+  CllElt ret;
+
+  assert(direction == 0 || direction == 1);
+
+  /* If we try and share code with `getCll` we will end up with a circular
+   * reference. To get around this we "borrow" the function pointers from `e`
+   * when creating a new `CllElt` here. This allows us to in effect do some
+   * introspection, as we can get a pointer to the function (`_cllAddLeft` or
+   * `_cllAddRight`) that is calling this one.
+   */
+  ret = malloc(sizeof(*ret));
+  assert(ret);
+
+  ret->value = elem;
+  ret->addLeft = e->addLeft;
+  ret->addRight = e->addRight;
+  ret->pop = e->pop;
+  ret->print = e->print;
+  ret->destroy = e->destroy;
+
+  if(direction == 0)
+  {
+    ret->next = e;
+    ret->previous = e->previous;
+    e->previous->next = ret;
+    e->previous = ret;
+  }
+  else
+  {
+    ret->previous = e;
+    ret->next = e->next;
+    e->next->previous = ret;
+    e->next = ret;
+  }
+
+  return ret;
+}
+
+CllElt _cllAddLeft(CllElt e, int elem)
+{
+  return _cllAddInternal(e, elem, 0);
+}
+
+CllElt _cllAddRight(CllElt e, int elem)
+{
+  return _cllAddInternal(e, elem, 1);
+}
+
+int _cllPop(CllElt e)
+{
+  int ret;
+
+  ret = e->value;
+  e->next->previous = e->previous;
+  e->previous->next = e->next;
+  free(e);
+
+  return ret;
+}
+
+void _cllPrint(CllElt e)
+{
+  CllElt t;
+  int i = 0;
+
+  t = e;
+  do
+  {
+    printf("Element %d: %d\n", ++i, t->value);
+    t = t->next;
+  } while(t != e);
+}
+
+void _cllDestroy(CllElt e)
+{
+  CllElt thisDeletion;
+  CllElt nextDeletion;
+
+  thisDeletion = e;
+  do
+  {
+    nextDeletion = thisDeletion->next;
+    free(thisDeletion);
+    thisDeletion = nextDeletion;
+  } while(thisDeletion != e);
+}
+
+CllElt getCll(int elem)
+{
+  CllElt ret;
+  ret = malloc(sizeof(*ret));
+  assert(ret);
+
+  ret->value = elem;
+  ret->addLeft = _cllAddLeft;
+  ret->addRight = _cllAddRight;
+  ret->pop = _cllPop;
+  ret->print = _cllPrint;
+  ret->destroy = _cllDestroy;
+
+  ret->previous = ret;
+  ret->next = ret;
+  return ret;
+}
