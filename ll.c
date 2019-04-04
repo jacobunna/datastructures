@@ -24,7 +24,7 @@ struct llEltDbl
 
 /* Queue */
 
-int _queuePop(Queue q)
+static int _queuePop(Queue q)
 {
   /* Remove an element from the head of the queue and return its value */
   struct llElt *removeElem;
@@ -53,7 +53,7 @@ int _queuePop(Queue q)
   return ret;
 }
 
-void _queueEnqueue(Queue q, int elem)
+static void _queueEnqueue(Queue q, int elem)
 {
   /* Add an element to the tail of the queue */
   struct llElt *newElem;
@@ -113,7 +113,7 @@ Queue getQueue(void)
 
 /* Stack */
 
-int _stackPop(Stack s)
+static int _stackPop(Stack s)
 {
   /* Remove an element from the head of the stack and return its value */
   struct llElt *removeElem;
@@ -139,7 +139,7 @@ int _stackPop(Stack s)
   return ret;
 }
 
-void _stackAdd(Stack s, int elem)
+static void _stackAdd(Stack s, int elem)
 {
   /* Add an element to the head of the stack */
   struct llElt *newElem;
@@ -195,7 +195,7 @@ Stack getStack(void)
 
 /* Deque */
 
-int _dequePopInternal(Deque d, int direction)
+static int _dequePopInternal(Deque d, int direction)
 {
   struct llEltDbl *removeElem;
   int ret;
@@ -241,17 +241,17 @@ int _dequePopInternal(Deque d, int direction)
   return ret;
 }
 
-int _dequePopLeft(Deque d)
+static int _dequePopLeft(Deque d)
 {
   return _dequePopInternal(d, 0);
 }
 
-int _dequePopRight(Deque d)
+static int _dequePopRight(Deque d)
 {
   return _dequePopInternal(d, 1);
 }
 
-void _dequeAddInternal(Deque d, int elem, int direction)
+static void _dequeAddInternal(Deque d, int elem, int direction)
 {
   struct llEltDbl *newElem;
 
@@ -287,12 +287,12 @@ void _dequeAddInternal(Deque d, int elem, int direction)
   d->len++;
 }
 
-void _dequeAddLeft(Deque d, int elem)
+static void _dequeAddLeft(Deque d, int elem)
 {
   _dequeAddInternal(d, elem, 0);
 }
 
-void _dequeAddRight(Deque d, int elem)
+static void _dequeAddRight(Deque d, int elem)
 {
   _dequeAddInternal(d, elem, 1);
 }
@@ -336,7 +336,7 @@ Deque getDeque(void)
 
 /* Circular linked list */
 
-CllElt _cllAddInternal(CllElt e, int elem, int direction)
+static CllElt _cllAddInternal(CllElt e, int elem, int direction)
 {
   CllElt ret;
 
@@ -376,17 +376,17 @@ CllElt _cllAddInternal(CllElt e, int elem, int direction)
   return ret;
 }
 
-CllElt _cllAddLeft(CllElt e, int elem)
+static CllElt _cllAddLeft(CllElt e, int elem)
 {
   return _cllAddInternal(e, elem, 0);
 }
 
-CllElt _cllAddRight(CllElt e, int elem)
+static CllElt _cllAddRight(CllElt e, int elem)
 {
   return _cllAddInternal(e, elem, 1);
 }
 
-int _cllPop(CllElt e)
+static int _cllPop(CllElt e)
 {
   int ret;
 
@@ -398,7 +398,7 @@ int _cllPop(CllElt e)
   return ret;
 }
 
-void _cllPrint(CllElt e)
+static void _cllPrint(CllElt e)
 {
   CllElt t;
   int i = 0;
@@ -411,7 +411,7 @@ void _cllPrint(CllElt e)
   } while(t != e);
 }
 
-void _cllDestroy(CllElt e)
+static void _cllDestroy(CllElt e)
 {
   CllElt thisDeletion;
   CllElt nextDeletion;

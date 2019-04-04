@@ -2,6 +2,7 @@
 
 #include "minunit.h"
 #include "ll.h"
+#include "array.h"
 
 static char * test_queue()
 {
@@ -179,6 +180,79 @@ static char * test_cll()
   return 0;
 }
 
+static char * test_rbDeque()
+{
+  RbDeque d;
+
+  d = getRbDeque();
+
+  /* Check initial length */
+
+  mu_assert(d->len == 0, "Initial length of deque is not 0 [0049]");
+
+  /* Check we can add left from length zero and pop it */
+
+  d->addLeft(d, 15);
+  mu_assert(d->len == 1, "Deque with 1 element does not have length 1 [0050]");
+  mu_assert(d->popLeft(d) == 15, "Unexpected element popped from left of "
+    "deque [0051]");
+  mu_assert(d->len == 0, "Deque with 0 elements does not have length 0 "
+    "[0052]");
+
+  /* Check we can add right from length zero and pop it */
+
+  d->addRight(d, 150);
+  mu_assert(d->len == 1, "Deque with 1 element does not have length 1 [0053]");
+  mu_assert(d->popRight(d) == 150, "Unexpected element popped from right of "
+    "deque [0054]");
+  mu_assert(d->len == 0, "Deque with 0 elements does not have length 0 "
+    "[0055]");
+
+  /* Check we can insert from left and pop from right and vice versa */
+
+  d->addLeft(d, 1500);
+  mu_assert(d->len == 1, "Deque with 1 element does not have length 1 [0056]");
+  mu_assert(d->popRight(d) == 1500, "Unexpected element popped from right of "
+    "deque [0057]");
+  mu_assert(d->len == 0, "Deque with 0 elements does not have length 0 "
+    "[0058]");
+  d->addRight(d, 15000);
+  mu_assert(d->len == 1, "Deque with 1 element does not have length 1 [0059]");
+  mu_assert(d->popLeft(d) == 15000, "Unexpected element popped from left of "
+    "deque [0060]");
+  mu_assert(d->len == 0, "Deque with 0 elements does not have length 0 "
+    "[0061]");
+
+  /* More complicated test with multiple insertions and pops from both sides */
+
+  d->addLeft(d, 1);
+  d->addLeft(d, 3);
+  d->addRight(d, 2);
+  d->addLeft(d, 5);
+  d->addRight(d, 4);
+  d->addRight(d, 6);
+  mu_assert(d->len == 6, "Deque with 6 elements does not have length 6 "
+    "[0062]");
+  mu_assert(d->popLeft(d) == 5, "Unexpected element popped from left of "
+    "deque [0063]");b
+  mu_assert(d->popRight(d) == 6, "Unexpected element popped from right of "
+    "deque [0064]");
+  mu_assert(d->popRight(d) == 4, "Unexpected element popped from right of "
+    "deque [0065]");
+  mu_assert(d->popRight(d) == 2, "Unexpected element popped from right of "
+    "deque [0066]");
+  mu_assert(d->popRight(d) == 1, "Unexpected element popped from right of "
+    "deque [0067]");
+  mu_assert(d->popLeft(d) == 3, "Unexpected element popped from left of "
+    "deque [0068]");
+  mu_assert(d->len == 0, "Deque with 0 elements does not have length 0 "
+    "[0069]");
+
+  d->destroy(d);
+
+  return 0;
+}
+
 static char * all_tests()
 {
   mu_suite_start();
@@ -186,6 +260,7 @@ static char * all_tests()
   mu_run_test(test_stack);
   mu_run_test(test_deque);
   mu_run_test(test_cll);
+  mu_run_test(test_rbDeque);
   return 0;
 }
 
