@@ -5,6 +5,7 @@
 #include "array.h"
 
 #define RB_DEQUE_INITIAL_SIZE (4)
+#define HASH_TABLE_INITIAL_SIZE (8)
 
 /* Ring buffer deque */
 
@@ -127,5 +128,78 @@ RbDeque getRbDeque(void)
   ret = _getRbDequeInternal(RB_DEQUE_INITIAL_SIZE);
   ret->addLeft = _dequeAddLeft;
   ret->addRight = _dequeAddRight;
+  return ret;
+}
+
+/* Hash table */
+
+int hash(int x)
+{
+  /* From StackOverflow
+   * https://stackoverflow.com/questions/664014/
+   * what-integer-hash-function-are-good-that-accepts-an-integer-hash-key
+   */
+  x = ((x >> 16) ^ x) * 0x45d9f3b;
+  x = ((x >> 16) ^ x) * 0x45d9f3b;
+  x = (x >> 16) ^ x;
+  return x;
+}
+
+static void _htPutItem(HashTable t, int elem)
+{
+  struct hashTableItem *newItem;
+  struct hashTableItem *searchItem;
+  int position;
+
+  position = hash(elem) % t->size;
+  newItem = malloc(sizeof(struct hashTableItem));
+  assert(newItem);
+  newItem->next = 0;
+  newItem->value = elem;
+  if(t->items[position] == 0)
+  {
+    t->items[0] = newItem;
+    return;
+  }
+  for(searchItem = t->items[position]; searchItem->next != 0;
+    searchItem = searchItem->next);
+  searchItem->next = newItem;
+}
+
+static int _htGetItem(HashTable t, int elem)
+{
+  //TODO
+}
+
+static void _htRemoveItem(HashTable t, int elem)
+{
+  //TODO
+}
+
+static void _htDestroy(HashTable t)
+{
+  //TODO free everything else
+  free(t);
+}
+
+HashTable getHashTable(void)
+{
+  HashTable ret;
+  int i;
+
+  ret = malloc(sizeof(*ret));
+  assert(ret);
+  ret->size = HASH_TABLE_INITIAL_SIZE;
+  ret->len = 0;
+  ret->items = malloc(sizeof(struct hashTableItem) * ret->size);
+  assert(ret->items);
+  for(i=0; i<ret->size; i++)
+  {
+    ret->items[i] = 0;
+  }
+  ret->putItem = _htPutItem;
+  ret->getItem = _htGetItem;
+  ret->removeItem = _htRemoveItem;
+  ret->destroy = _htDestroy;
   return ret;
 }

@@ -234,7 +234,7 @@ static char * test_rbDeque()
   mu_assert(d->len == 6, "Deque with 6 elements does not have length 6 "
     "[0062]");
   mu_assert(d->popLeft(d) == 5, "Unexpected element popped from left of "
-    "deque [0063]");b
+    "deque [0063]");
   mu_assert(d->popRight(d) == 6, "Unexpected element popped from right of "
     "deque [0064]");
   mu_assert(d->popRight(d) == 4, "Unexpected element popped from right of "
@@ -253,6 +253,21 @@ static char * test_rbDeque()
   return 0;
 }
 
+static char * test_hashTable()
+{
+  HashTable t;
+
+  t = getHashTable();
+
+  /* Check initial length */
+
+  mu_assert(t->len == 0, "Initial length of hash table is not 0 [0070]");
+
+  t->destroy(t);
+
+  return 0;
+}
+
 static char * all_tests()
 {
   mu_suite_start();
@@ -261,6 +276,7 @@ static char * all_tests()
   mu_run_test(test_deque);
   mu_run_test(test_cll);
   mu_run_test(test_rbDeque);
+  mu_run_test(test_hashTable);
   return 0;
 }
 

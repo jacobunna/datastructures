@@ -28,3 +28,34 @@ struct rbDeque
   void (*print) (RbDeque d);
   void (*destroy) (RbDeque d);
 };
+
+/* Hash table */
+
+/* Hash table typedef */
+typedef struct hashTable *HashTable;
+
+/* Get an integer hashtable */
+HashTable getHashTable(void);
+
+/* Individual hash table item
+ * This is a linked list of items. If `next` is a null pointer then this is the
+ * last element.
+ */
+struct hashTableItem
+{
+  struct hashTableItem *next;
+  int value;
+};
+
+/* Hash table struct */
+struct hashTable
+{
+  struct hashTableItem **items;
+  int size;
+  int len;
+
+  void (*putItem) (HashTable t, int elem);
+  int (*getItem) (HashTable t, int elem);
+  void (*removeItem) (HashTable t, int elem);
+  void (*destroy) (HashTable t);
+};
